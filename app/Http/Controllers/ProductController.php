@@ -8,6 +8,7 @@ use App\Models\CategoryProduct;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -16,10 +17,38 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data=product::get();
-        return view('pages.product.list',['data'=>$data]);
+
+        $search = $request->input('search');
+        $filter = $request->input('filter');
+        $data = product::with(['category']);
+        $categories = CategoryProduct::get();
+
+        // if ($search) {
+        //     $data->where('name', 'like', "%$search%")
+        //         ->orWhere('address', 'like', "%$search%")
+        //         ->where('majors_id', '=', "$filter");
+        // }
+
+        if ($search) {
+            $data->where(function ($query) use ($search) {
+                $query->where('title', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            });
+        }
+
+        if ($filter) {
+            $data->where(function ($query) use ($filter) {
+                $query->where('category_id', '=', $filter);
+            });
+        }
+
+        $data = $data->paginate(10);
+        return view('pages.product.list',[
+            'data'=>$data,
+            'categories'=>$categories
+        ]);
     }
 
     /**

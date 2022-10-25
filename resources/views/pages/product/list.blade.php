@@ -1,16 +1,16 @@
 @extends('layouts.dashboard')
 @section('content')
     <h1>Hello, world!</h1>
-    {{-- @if ($message = Session::get('notif'))
+    @if ($message = Session::get('notif'))
         <div class="alert alert-primary" role="alert">
             <strong>{{ $message }}</strong>
         </div>
     @endif
-    <form class="row g-3" action="{{ route('products.index') }}" method="GET">
+    <form class="row g-3" action="{{ route('product.index') }}" method="GET">
         <div class="col-auto">
             <select name="filter" id="filter" class="form-select">
                 <option value="">All</option>
-                @foreach ($categorys as $category)
+                @foreach ($categories as $category)
                     <option value="{{ $category->id }}" {{ request('filter') == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}</option>
                 @endforeach
@@ -24,7 +24,7 @@
         <div class="col-auto">
             <button type="submit" class="btn btn-primary mb-3">Cari</button>
         </div>
-    </form> --}}
+    </form>
     <table class="table">
         <thead>
             <tr>
