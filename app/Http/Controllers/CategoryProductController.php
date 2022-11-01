@@ -16,8 +16,8 @@ class CategoryProductController extends Controller
     public function index()
     {
         //
-        $data=CategoryProduct::get();
-        return view ('pages.category.list',['data'=>$data]);
+        $data = CategoryProduct::get();
+        return view('pages.category.list', ['data' => $data]);
     }
 
     /**
@@ -28,8 +28,7 @@ class CategoryProductController extends Controller
     public function create()
     {
         $category = new  CategoryProduct();
-        return view('pages.category.form',['category'=>$category]);
-                                                   //CategoryProduct
+        return view('pages.category.form', ['category' => $category]);
     }
 
     /**
@@ -40,9 +39,9 @@ class CategoryProductController extends Controller
      */
     public function store(StoreCategoryProductRequest $request)
     {
-        $data=$request->all();
+        $data = $request->all();
         CategoryProduct::create($data);
-        return redirect()->route('category.index')->with('notif','berhasil euy');;
+        return redirect()->route('category.index')->with('notif', 'berhasil euy');;
     }
 
     /**
@@ -53,7 +52,8 @@ class CategoryProductController extends Controller
      */
     public function show(CategoryProduct $categoryProduct)
     {
-        //
+        $categoryProduct = $categoryProduct->load(['products'])->first();
+        return view('pages.category.list-category', compact('categoryProduct'));
     }
 
     /**
@@ -64,7 +64,7 @@ class CategoryProductController extends Controller
      */
     public function edit(CategoryProduct $category)
     {
-        return view('pages.category.form',['category'=>$category]);
+        return view('pages.category.form', ['category' => $category]);
     }
 
     /**
@@ -78,7 +78,7 @@ class CategoryProductController extends Controller
     {
         $data = $request->all();
         $category->update($data);
-        return redirect()->route('category.index')->with('notif','berhasil euy');
+        return redirect()->route('category.index')->with('notif', 'berhasil euy');
     }
 
     /**
@@ -90,6 +90,6 @@ class CategoryProductController extends Controller
     public function destroy(CategoryProduct $category)
     {
         $category->delete();
-        return redirect()->route('category.index')-> with('notif','berhasil CRUD euy');
+        return redirect()->route('category.index')->with('notif', 'berhasil CRUD euy');
     }
 }

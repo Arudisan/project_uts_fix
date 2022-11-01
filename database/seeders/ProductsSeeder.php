@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\CategoryProduct;
+use App\Models\Products;
 use Illuminate\Database\Seeder;
 
-class CategorySeeder extends Seeder
+class ProductsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +15,5 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        //
     }
 }

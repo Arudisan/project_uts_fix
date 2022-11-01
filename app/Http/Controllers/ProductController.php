@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\product;
+use App\Models\Products;
 use Illuminate\Http\Request;
 use App\Models\CategoryProduct;
 use Illuminate\Support\Facades\File;
@@ -22,14 +22,10 @@ class ProductController extends Controller
 
         $search = $request->input('search');
         $filter = $request->input('filter');
-        $data = product::with(['category']);
+        $data = Products::with(['category']);
         $categories = CategoryProduct::get();
 
-        // if ($search) {
-        //     $data->where('name', 'like', "%$search%")
-        //         ->orWhere('address', 'like', "%$search%")
-        //         ->where('majors_id', '=', "$filter");
-        // }
+
 
         if ($search) {
             $data->where(function ($query) use ($search) {
@@ -58,7 +54,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $product=new product();
+        $product=new Products();
         return view('pages.product.form',[
             'product'=>$product,
             'categories' => CategoryProduct::get()
@@ -76,12 +72,12 @@ class ProductController extends Controller
 
         $data=$request->all();
         $image = $request->file('image');
-        $image = $request->file('image');
         if($image){
             $data['image'] = $image->store('image/product','public');
         }
-        product::create($data);
-        return redirect()->route('product.index');
+        Products::create($data);
+        return redirect()->route('product.index')->with('notif', 'Data Berhasil di Input');
+
     }
 
     /**
@@ -90,7 +86,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(product $product)
+    public function show(Products $product)
     {
         //
     }
@@ -101,7 +97,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(product $product)
+    public function edit(Products $product)
     {
         return view('pages.product.form',[
             'product'=>$product,
@@ -116,7 +112,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductRequest $request,product $product)
+    public function update(UpdateProductRequest $request,Products $product)
     {
         $data=$request->all();
         $image=$request->file('image');
@@ -129,7 +125,7 @@ class ProductController extends Controller
         }
         $product->update($data);
 
-        return redirect()->route('product.index');
+        return redirect()->route('product.index')->with('notif', 'Data Berhasil di Input');
     }
 
     /**
@@ -138,10 +134,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(product $product)
+    public function destroy(Products $product)
     {
         $product->destroy($product->id);
         File::delete(storage_path('app/public/').$product->image);
-        return redirect()->route('product.index');
+        return redirect()->route('product.index')->with('notif', 'Data Berhasil di Hapus');
     }
 }
