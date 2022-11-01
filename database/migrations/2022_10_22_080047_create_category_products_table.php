@@ -15,6 +15,9 @@ class CreateCategoryProductsTable extends Migration
     {
         Schema::create('category_products', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 200);
+            $table->string('description', 200);
+            $table->enum('status', ['active', 'inactive', 'draft']);
             $table->timestamps();
         });
     }
