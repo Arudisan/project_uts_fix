@@ -14,14 +14,10 @@ class CategoryProductSeeder extends Seeder
      */
     public function run()
     {
-        CategoryProduct::truncate();
-        $kategori = ["kaos", "kaoskaki", "dompet", "jas"];
-        foreach ($kategori as $key => $kat) {
-            CategoryProduct::create([
-                "name" => $kat,
-                "description" => "ini kategori $kat",
-                "status" => "untuk $kat"
-            ]);
-        }
+        CategoryProduct::create([
+            'name' => 'Baju',
+            'description' => 'baju untuk anak',
+            'status' => 'active'
+        ]);
     }
 }
