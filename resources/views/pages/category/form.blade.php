@@ -10,7 +10,7 @@
     @csrf
     <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Nama</label>
-        <input type="text" class="form-control" name="name" id="exampleInputEmail1" aria-describedby="emailHelp"
+        <input type="text" class="form-control" name="name" id="exampleInputEmail1" aria-describedby="name"
             value="{{ $category->name }}">
         @error('name')
             <div class="text-muted"> {{ $message }}</div>

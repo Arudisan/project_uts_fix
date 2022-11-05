@@ -1,13 +1,19 @@
 @extends('layouts.dashboard')
 @section('content')
-    <h3> Jurusan {{ $categoryProduct->name }} </h3>
-    <p>Jumlah siswa {{ count($categoryProduct->products) }}</p>
-    <p>Jumlah siswa {{ $categoryProduct->products->count() }}</p>
+    <h1 style="color:aliceblue">Hello, world!</h1>
+    @if ($message = Session::get('notif'))
+        <div class="alert alert-primary" role="alert">
+            <strong>{{ $message }}</strong>
+        </div>
+    @endif
+    <h3> Kategori {{ $categoryProduct->name }} </h3>
+    <p>Jumlah Produk {{ count($categoryProduct->products) }}</p>
+    <p>Jumlah Jumlah Produk {{ $categoryProduct->products->count() }}</p>
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Nama Siswa </th>
+                <th scope="col">Nama Produk </th>
             </tr>
         </thead>
         <tbody>
