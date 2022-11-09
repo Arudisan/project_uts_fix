@@ -41,7 +41,7 @@ class CategoryProductController extends Controller
     {
         $data = $request->all();
         CategoryProduct::create($data);
-        return redirect()->route('category.index')->with('notif', 'berhasil euy');;
+        return redirect()->route('category.index')->with('notif', 'berhasil euy');
     }
 
     /**
