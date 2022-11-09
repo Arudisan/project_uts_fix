@@ -25,7 +25,7 @@ class StoreCategoryProductRequest extends FormRequest
     {
         return [
             //
-            "name" => "required|unique:posts|max:100",
+            "name" => "required|max:100",
             "description" => "required",
             "status" => "required|in:active,inactive"
         ];

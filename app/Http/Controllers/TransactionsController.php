@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\TransactionDetail;
@@ -44,6 +45,7 @@ class TransactionsController extends Controller
         DB::beginTransaction();
         try {
             $transaction = Transaction::create([
+                'id' => Uuid::uuid4()->toString(),
                 'customer' => 'ardi',
                 'total_amount' => 100000
             ]);
@@ -66,7 +68,7 @@ class TransactionsController extends Controller
         } catch (\Throwable $th) {
             //membatalkan semua query,jika salah satu query ada yang error;
             DB::rollback();
-            return "gagal";
+            return $th;
         }
     }
 

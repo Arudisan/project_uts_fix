@@ -14,8 +14,8 @@ class CreateTransactionDetailsTable extends Migration
     public function up()
     {
         Schema::create('transaction_details', function (Blueprint $table) {
-            $table->id();
-            $table->integer('transaction_id')->constrained;
+            $table->uuid('id');
+            $table->uuid('transaction_id');
             $table->integer('product_id')->constrained;
             $table->integer('quantity');
             $table->float('amount', 12, 2);
