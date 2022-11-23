@@ -15,7 +15,6 @@ class CategoryProductController extends Controller
      */
     public function index()
     {
-        //
         $data = CategoryProduct::get();
         return view('pages.category.list', ['data' => $data]);
     }

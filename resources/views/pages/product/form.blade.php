@@ -8,7 +8,6 @@
             <form action="{{ route('product.store') }}" method="post" enctype="multipart/form-data">
     @endif
     @csrf
-
     <body>
         <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Category</label>

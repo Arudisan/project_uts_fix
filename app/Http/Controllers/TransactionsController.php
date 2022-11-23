@@ -30,7 +30,6 @@ class TransactionsController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -52,10 +51,11 @@ class TransactionsController extends Controller
             $transactionDetail = [];
             foreach ($products as $index => $product) {
                 $transactionDetails[] = [
+                    'id' => Uuid::uuid4()->toString(),
                     'transaction_id' => $transaction->id,
                     'product_id' => $index,
-                    'quantity' => 'salah',
-                    'amount' => 'salah',
+                    'quantity' => 10000,
+                    'amount' => 10000,
                     'created_at' => Carbon::now()
                 ];
             }

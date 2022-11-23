@@ -45,7 +45,7 @@
                     <td>{{ $item->title }}</td>
                     <td>{{ $item->status }}</td>
                     <td>{{ $item->description }}</td>
-                    <td><img src="/storage/{{ $item->image}}" alt="" width="200px" height="300px"></td>
+                    <td><img src="/storage/{{ $item->image }}" alt="" width="200px" height="300px"></td>
                     <td>{{ $item->weight }}</td>
                     <td> @currency ($item->price)</td>
                     {{-- <td><img src="/storage/{{ $item->image}}" alt="" width="200px" height="300px"> --}}
