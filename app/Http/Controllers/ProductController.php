@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Products;
 use Illuminate\Http\Request;
 use App\Models\CategoryProduct;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -41,9 +42,9 @@ class ProductController extends Controller
         }
 
         $data = $data->paginate(10);
-        return view('pages.product.list',[
-            'data'=>$data,
-            'categories'=>$categories
+        return view('admin.pages.product.list', [
+            'data' => $data,
+            'categories' => $categories
         ]);
     }
 
@@ -54,9 +55,10 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $product=new Products();
-        return view('pages.product.form',[
-            'product'=>$product,
+        $product = new Products();
+
+        return view('admin.pages.product.form', [
+            'product' => $product,
             'categories' => CategoryProduct::get()
         ]);
     }
@@ -70,14 +72,16 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
 
-        $data=$request->all();
+        $data = $request->all();
+        // dd($data);
         $image = $request->file('image');
-        if($image){
-            $data['image'] = $image->store('image/product','public');
+        if ($image) {
+            $data['image'] = $image->store('image/product', 'public');
         }
-        Products::create($data);
-        return redirect()->route('product.index')->with('notif', 'Data Berhasil di Input');
 
+        Products::create($data);
+
+        return redirect()->route('product.index')->with('notif', 'Data Berhasil di Input');
     }
 
     /**
@@ -99,9 +103,13 @@ class ProductController extends Controller
      */
     public function edit(Products $product)
     {
-        return view('pages.product.form',[
-            'product'=>$product,
-            'categories' => CategoryProduct::get()
+        if (!Auth::user()->hasPermissionTo('form product')) {
+            return redirect()->route('product.index')->with('notif', 'tidak ada akses');
+        }
+        return view('admin.pages.product.form', [
+            'title' => 'Edit Product',
+            'product' => $product,
+            'categories' => CategoryProduct::where('status', 'active'),
         ]);
     }
 
@@ -112,16 +120,16 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductRequest $request,Products $product)
+    public function update(UpdateProductRequest $request, Products $product)
     {
-        $data=$request->all();
-        $image=$request->file('image');
-        if($image){
-            $exists= File::exists(storage_path('app/public/') . $product->image);
-            if($exists){
+        $data = $request->all();
+        $image = $request->file('image');
+        if ($image) {
+            $exists = File::exists(storage_path('app/public/') . $product->image);
+            if ($exists) {
                 File::delete(storage_path('app/public/') . $product->image);
             }
-            $data['image'] = $image->store('image/product','public');
+            $data['image'] = $image->store('image/product', 'public');
         }
         $product->update($data);
 
@@ -137,7 +145,7 @@ class ProductController extends Controller
     public function destroy(Products $product)
     {
         $product->destroy($product->id);
-        File::delete(storage_path('app/public/').$product->image);
+        File::delete(storage_path('app/public/') . $product->image);
         return redirect()->route('product.index')->with('notif', 'Data Berhasil di Hapus');
     }
 }
