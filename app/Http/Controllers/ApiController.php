@@ -9,6 +9,8 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\DB;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 
 class ApiController extends Controller
@@ -62,11 +64,40 @@ class ApiController extends Controller
             if ($transaction_details) {
                 TransactionDetail::insert($transaction_details);
             }
+            $paymentUrl = $this->createInvoice($transaction);
             DB::commit();
-            return $transaction;
+            return $paymentUrl;
         } catch (\Throwable $th) {
             DB::rollback();
             return $th;
         }
+    }
+    public function createInvoice( $transaction){
+
+         // set konnfigrasi midtrans ngambil dari config/midrtrans.php
+         Config::$serverKey = config('midtrans.serverKey');
+         Config::$isProduction = config('midtrans.isProduction');
+         Config::$isSanitized = config('midtrans.isSanitized');
+         Config::$is3ds = config('midtrans.is3ds');
+ 
+         // bat params untuk dikirim ke midtrans
+         $midtrans_params = [
+             'transaction_details' =>[
+                 'order_id' => $transaction->id,
+                 'gross_amount' => (int) $transaction->total_amount //ditetapkan harus int yang dikirim
+             ],
+             'customer_details' =>[
+                 'first_name' => $transaction->customer,
+                 'email' => "dev.ardibbmme@gmail.com",
+             ],
+    
+         ];
+ 
+         // untuk jika berhasil dan gagal
+     
+             // Get Snap Payment Page URL
+             $paymentUrl = Snap::createTransaction($midtrans_params)->redirect_url;
+             return $paymentUrl;
+ 
     }
 }

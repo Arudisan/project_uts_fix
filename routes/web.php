@@ -22,10 +22,14 @@ Route::get('/', function () {
 });
 
 Route::get('/transactions', [TransactionsController::class, 'store']);
-Auth::routes();
-Route::group(['middleware' => 'auth'], function () {
+Auth::routes(['verify' => true]);
+Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('product', ProductController::class);
     Route::resource('category', CategoryProductController::class);
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [App\Http\Controllers\ExampleController::class, 'example'])->name('dashboard');
 });
+
+// Route::get('/send-mail',fuction() {
+//     Mail::to('newuser@example.com')->send(new MailtrapExample());
+//     return 'A message has been sent to MailTrap';
