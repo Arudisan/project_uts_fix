@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\TransactionDetail;
 use App\Models\transactionDetails;
 use Illuminate\Support\Facades\DB;
+use App\Models\Product;
 use App\Http\Requests\StoreTransactionRequest;
 
 class TransactionsController extends Controller
@@ -20,7 +21,8 @@ class TransactionsController extends Controller
      */
     public function index()
     {
-        //
+        $data = Transaction::all();
+        return view('admin.pages.transaction.list', ["data" => $data]);
     }
 
     /**
@@ -78,9 +80,17 @@ class TransactionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Transaction $transaction)
     {
-        //
+        $id = $transaction->id;
+        $details = TransactionDetail::where('transaction_id', $id)->with(['product'])->get();
+        return view(
+            'admin.pages.transaction.detail',
+            [
+                'details' => $details,
+                'transaction' => $transaction
+            ]
+        );
     }
 
     /**

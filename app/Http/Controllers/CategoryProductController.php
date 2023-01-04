@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoryProduct;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreCategoryProductRequest;
 use App\Http\Requests\UpdateCategoryProductRequest;
 
@@ -15,8 +16,8 @@ class CategoryProductController extends Controller
      */
     public function index()
     {
-        $data = CategoryProduct::get();
-        return view('pages.category.list', ['data' => $data]);
+        $data = CategoryProduct::paginate(2);
+        return view('admin.pages.category.list', ['data' => $data]);
     }
 
     /**
@@ -27,7 +28,7 @@ class CategoryProductController extends Controller
     public function create()
     {
         $category = new  CategoryProduct();
-        return view('pages.category.form', ['category' => $category]);
+        return view('admin.pages.category.form', ['category' => $category]);
     }
 
     /**
@@ -52,7 +53,7 @@ class CategoryProductController extends Controller
     public function show(CategoryProduct $categoryProduct)
     {
         $categoryProduct = $categoryProduct->load(['products'])->first();
-        return view('pages.category.list-category', compact('categoryProduct'));
+        return view('admin.pages.category.list-category', compact('categoryProduct'));
     }
 
     /**
@@ -63,7 +64,16 @@ class CategoryProductController extends Controller
      */
     public function edit(CategoryProduct $category)
     {
-        return view('pages.category.form', ['category' => $category]);
+        if (!Auth::user()->hasPermissionTo('form categoryProduct')) {
+            return redirect()->route('category.index')->with('notif', 'Tidak Ada Akses');
+        }
+        return view(
+            'admin.pages.category.form',
+            [
+                'category' => $category,
+                'title' => "edit Form Category",
+            ]
+        );
     }
 
     /**
