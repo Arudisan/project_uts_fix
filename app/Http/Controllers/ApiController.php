@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
-use App\Models\Products;
+use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\TransactionDetail;
@@ -35,7 +35,7 @@ class ApiController extends Controller
         foreach ($params['products'] as $value) {
             $productIds[] = $value['id'];
         }
-        $products = Products::whereIn('id', $productIds)->get();
+        $products = Product::whereIn('id', $productIds)->get();
         $total_amount = 0;
         foreach ($params['products'] as $value) {
             $product = $products->firstWhere('id', $value['id']);

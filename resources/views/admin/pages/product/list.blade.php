@@ -48,8 +48,9 @@
                                         @foreach ($data as $list)
                                             <tr>
                                                 {{-- untuk generate nomer urut otomatis --}}
-                                                <th scope="row">
-                                                    {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
+                                                <th scope="row">{{ $loop->iteration }}
+                                                    {{-- {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }} --}}
+
                                                 </th>
                                                 {{-- untuk memanggil data dari database dan di tampilkan --}}
                                                 <td>{{ $list->title }}</td>
@@ -83,21 +84,8 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Title</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Weight</th>
-                                            <th scope="col">category</th>
-                                            <th scope="col">Image</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
-                                {{ $data->withQueryString()->links() }}
+                                {{-- {{ $data->withQueryString()->links() }} --}}
                             </div>
                             <!-- /.card-body -->
                         </div>

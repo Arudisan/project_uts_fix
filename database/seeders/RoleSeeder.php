@@ -19,7 +19,7 @@ class RoleSeeder extends Seeder
         // bikin role admin jika ada
         $role = Role::findOrCreate('admin');
         //bikin role form category jika ada
-        $permissionCategory = Permission::findOrCreate('form category', 'web');
+        $permissionCategory = Permission::findOrCreate('form categoryProduct', 'web');
         // bikin permission form product jika ada
         $permissionProduct = Permission::findOrCreate('form product', 'web');
         // role admin admin diberikan hak akses form category dan form products

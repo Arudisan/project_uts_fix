@@ -15,7 +15,7 @@ class UserPermissionSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::where('email', 'ardibbmme@ymail.com')->first();
+        $user = User::where('email', 'ardibbmme@yahoo.com')->first();
         if ($user) {
             $user->assignRole('admin');
         }

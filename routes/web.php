@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\CheckoutController;
+// use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CategoryProductController;
 
 /*
@@ -21,13 +23,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/transactions', [TransactionsController::class, 'store']);
 Auth::routes(['verify' => true]);
 Route::group(['middleware' => ['auth', 'verified']], function () {
-    Route::resource('product', ProductController::class);
-    Route::resource('category', CategoryProductController::class);
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [App\Http\Controllers\ExampleController::class, 'example'])->name('dashboard');
+    Route::resource('/product', ProductController::class);
+    Route::resource('/category', CategoryProductController::class);
+    Route::resource('/transaction', TransactionController::class);
+    Route::resource('/checkout', CheckoutController::class);
+    Route::get('/chart', [CheckoutController::class, 'chart'])->name('chart');
 });
 
 // Route::get('/send-mail',fuction() {

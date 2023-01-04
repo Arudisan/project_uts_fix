@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Products;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\CategoryProduct;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 
@@ -23,28 +24,32 @@ class ProductController extends Controller
 
         $search = $request->input('search');
         $filter = $request->input('filter');
-        $data = Products::with(['category']);
-        $categories = CategoryProduct::get();
+        // remember : tolong cekin key all-products yang ada dicache
+        // jika ada,langsung ambil
+        // jika gaada,query dulu,terus simpen ke cache selama 60 detik
+        //setelah itu baru return ke client
+        $data = Cache::remember('all-products', 60, function () use ($search, $filter) {
+            $data = Product::with(['category']);
+            // $categories = CategoryProduct::get();
 
+            if ($search) {
+                $data->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%$search%")
+                        ->orWhere('description', 'like', "%$search%");
+                });
+            }
 
-
-        if ($search) {
-            $data->where(function ($query) use ($search) {
-                $query->where('title', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
-            });
-        }
-
-        if ($filter) {
-            $data->where(function ($query) use ($filter) {
-                $query->where('category_id', '=', $filter);
-            });
-        }
-
-        $data = $data->paginate(10);
-        return view('admin.pages.product.list', [
-            'data' => $data,
-            'categories' => $categories
+            if ($filter) {
+                $data->where(function ($query) use ($filter) {
+                    $query->where('category_id', '=', $filter);
+                });
+            }
+            return $data->get();
+        });
+        return view('admin.pages.product.list', compact('data'), [
+            'tittle' => 'List Product',
+            // 'data' => $data,
+            // 'categories' => $categories
         ]);
     }
 
@@ -55,7 +60,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $product = new Products();
+        $product = new Product();
 
         return view('admin.pages.product.form', [
             'product' => $product,
@@ -79,7 +84,7 @@ class ProductController extends Controller
             $data['image'] = $image->store('image/product', 'public');
         }
 
-        Products::create($data);
+        Product::create($data);
 
         return redirect()->route('product.index')->with('notif', 'Data Berhasil di Input');
     }
@@ -90,7 +95,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Products $product)
+    public function show(Product $product)
     {
         //
     }
@@ -101,7 +106,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Products $product)
+    public function edit(Product $product)
     {
         if (!Auth::user()->hasPermissionTo('form product')) {
             return redirect()->route('product.index')->with('notif', 'tidak ada akses');
@@ -120,7 +125,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductRequest $request, Products $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
         $data = $request->all();
         $image = $request->file('image');
@@ -142,7 +147,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Products $product)
+    public function destroy(Product $product)
     {
         $product->destroy($product->id);
         File::delete(storage_path('app/public/') . $product->image);

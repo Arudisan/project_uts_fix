@@ -40,7 +40,9 @@
         {{-- tempat navbar --}}
         @include('admin.includes.navbar')
         @include('admin.includes.sidebar')
-        @yield('content')
+        <div class="container">
+            @yield('content')
+        </div>
         @include('admin.includes.footer')
         <!-- jQuery -->
         <script src="/plugins/jquery/jquery.min.js"></script>
